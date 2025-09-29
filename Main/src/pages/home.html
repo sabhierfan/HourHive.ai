@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - HourHive.ai</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            min-height: 100vh;
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .header {
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+        }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-title {
+            display: flex;
+            flex-direction: column;
+        }
+        .header-title h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #0d6efd;
+            margin: 0;
+        }
+        .header-title .subtitle {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin: 0;
+        }
+        .header-nav {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .welcome-section h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 1rem;
+        }
+        .feature-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: #0d6efd;
+        }
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+        .feature-description {
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+        }
+        .btn-logout {
+            color: #dc3545;
+            border: 1px solid #dc3545;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1.5rem;
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .btn-logout:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+        .dropdown-menu {
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .dropdown-item {
+            padding: 0.75rem 1.5rem;
+        }
+        .btn {
+            padding: 0.5rem 1.5rem;
+            font-weight: 500;
+        }
+        .hero-section {
+            margin-bottom: 2rem;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+        .pro-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 2.5rem 2rem 2rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 350px;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .pro-card:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+            transform: translateY(-4px) scale(1.02);
+        }
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+        .feature-description {
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .btn-outline-primary, .btn-outline-success, .btn-outline-info {
+            font-weight: 500;
+            border-width: 2px;
+        }
+        @media (max-width: 768px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .main-container {
+                margin-top: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1>HourHive.ai</h1>
+                <p class="subtitle">An optimized timetable creation</p>
+            </div>
+            <nav class="header-nav">
+                <button id="logoutBtn" class="btn btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section py-5" style="background: linear-gradient(90deg, #e3f2fd 0%, #f8f9fa 100%); border-radius: 0 0 32px 32px; box-shadow: 0 4px 24px rgba(0,0,0,0.04);">
+        <div class="container text-center">
+            <h2 class="display-5 fw-bold mb-3" style="color: #0d6efd;">Welcome to HourHive.ai</h2>
+            <p class="lead text-muted mb-4">Create, manage, and export your university timetables with ease and efficiency.</p>
+            <button class="btn btn-primary btn-lg px-4 shadow-sm" onclick="window.location.href='department-timetable.html'">
+                <i class="fas fa-calendar-plus me-2"></i> Create New Timetable
+            </button>
+        </div>
+    </section>
+
+    <div class="main-container" style="margin-top: -40px;">
+        <div class="features-grid">
+            <!-- Create Timetable Card -->
+            <div class="feature-card pro-card">
+                <div class="feature-icon bg-primary bg-opacity-10 rounded-circle mb-3" style="width:64px;height:64px;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-calendar-plus fa-2x text-primary"></i>
+                </div>
+                <h3 class="feature-title">Create Timetable</h3>
+                <p class="feature-description">Start a new department timetable with our guided form and smart suggestions.</p>
+                <button class="btn btn-outline-primary w-100 mt-auto" onclick="window.location.href='department-timetable.html'">Create New</button>
+            </div>
+
+            <!-- History Card -->
+            <div class="feature-card pro-card">
+                <div class="feature-icon bg-success bg-opacity-10 rounded-circle mb-3" style="width:64px;height:64px;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-history fa-2x text-success"></i>
+                </div>
+                <h3 class="feature-title">History</h3>
+                <p class="feature-description">View, manage, and revisit your previously generated timetables.</p>
+                <button class="btn btn-outline-success w-100 mt-auto" onclick="window.location.href='history.html'">View History</button>
+            </div>
+
+            <!-- Export Card -->
+            <div class="feature-card pro-card">
+                <div class="feature-icon bg-info bg-opacity-10 rounded-circle mb-3" style="width:64px;height:64px;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-file-export fa-2x text-info"></i>
+                </div>
+                <h3 class="feature-title">Export</h3>
+                <p class="feature-description">Export your timetables in PDF, Excel, or image formats for sharing and printing.</p>
+                <button class="btn btn-outline-info w-100 mt-auto" onclick="window.location.href='export.html'">Export Options</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center py-4 mt-5" style="color:#6c757d;font-size:0.95rem;">
+        &copy; 2025 HourHive.ai. All rights reserved.
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-auth-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../auth.js"></script>
+    <script>
+        // Add logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            firebase.auth().signOut().then(() => {
+                window.location.href = 'login.html';
+            }).catch((error) => {
+                console.error('Error signing out:', error);
+        });
+        });
+    </script>
+</body>
+</html> 

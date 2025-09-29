@@ -1,0 +1,21 @@
+{
+  "name": "zab-timetable",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "http-server ./src -p 3000",
+    "dev": "http-server ./src -p 3000 --cors",
+    "build": "echo \"No build step required\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "HourHive.ai application with Firebase authentication",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "dependencies": {
+    "firebase": "^11.6.0"
+  }
+}

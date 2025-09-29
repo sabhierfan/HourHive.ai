@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department Timetable - HourHive.ai</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .header {
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+        }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-title {
+            display: flex;
+            flex-direction: column;
+        }
+        .header-title h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #0d6efd;
+            margin: 0;
+        }
+        .header-title .subtitle {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin: 0;
+        }
+        .header-nav {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .page-header {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .timetable-form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-section {
+            margin-bottom: 30px;
+        }
+        .form-section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .btn-home {
+            color: #0d6efd;
+            border: 1px solid #0d6efd;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .btn-home:hover {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .btn-logout {
+            color: #dc3545;
+            border: 1px solid #dc3545;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .btn-logout:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1>HourHive.ai</h1>
+                <p class="subtitle">An optimized timetable creation</p>
+            </div>
+            <nav class="header-nav">
+                <a href="#" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#historyModal">
+                    <i class="fas fa-history"></i> History
+                </a>
+                <a href="home.html" class="btn btn-home">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <button id="logoutBtn" class="btn btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- History Modal -->
+    <div class="modal fade" id="historyModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Timetable History</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="timetableHistory" class="list-group">
+                        <!-- History items will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="page-header">
+            <h2>Create University Timetable</h2>
+            <p class="text-muted">Fill in the details below to generate a university-wide timetable</p>
+        </div>
+        
+        <!-- Timetable Statistics Toggle -->
+        <div class="form-check form-switch mb-4">
+            <input class="form-check-input" type="checkbox" id="statsToggle">
+            <label class="form-check-label" for="statsToggle">Show Timetable Optimization Statistics</label>
+        </div>
+        <div id="timetableStatsBox" class="alert alert-info d-none" style="white-space: pre-line;"></div>
+        
+        <div class="timetable-form">
+            <form id="departmentTimetableForm">
+                <!-- Department Programs List -->
+                <div id="departmentProgramsList">
+                    <div class="department-program-group mb-4 p-3 border rounded">
+                <!-- University Information -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Information</h3>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                            <label for="department" class="form-label">Department</label>
+                                    <select class="form-select" name="department[]" required onchange="updatePrograms(this)">
+                                <option value="">Select Department</option>
+                                <option value="air">Artificial Intelligence and Robotics</option>
+                                <option value="cs">Computer Science</option>
+                                <option value="ms">Management Sciences</option>
+                                <option value="ss">Social Sciences</option>
+                                <option value="media">Media Sciences</option>
+                            </select>
+                        </div>
+                                <div class="col-md-6">
+                            <label for="program" class="form-label">Program</label>
+                                    <select class="form-select" name="program[]" required>
+                                <option value="">Select Program</option>
+                            </select>
+                    </div>
+                </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Semester</label>
+                                    <select class="form-select" name="semester[]" required>
+                                        <option value="">Select Semester</option>
+                                        <option value="1">1st Semester</option>
+                                        <option value="2">2nd Semester</option>
+                                        <option value="3">3rd Semester</option>
+                                        <option value="4">4th Semester</option>
+                                        <option value="5">5th Semester</option>
+                                        <option value="6">6th Semester</option>
+                                        <option value="7">7th Semester</option>
+                                        <option value="8">8th Semester</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Section</label>
+                                    <select class="form-select" name="section[]" required>
+                                        <option value="">Select Section</option>
+                                        <option value="A">Section A</option>
+                                        <option value="B">Section B</option>
+                                        <option value="C">Section C</option>
+                                        <option value="D">Section D</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Rooms and Labs Configuration -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Available Class Rooms (comma separated)</label>
+                                    <input type="text" class="form-control rooms-input" placeholder="e.g. 102,103,201,202,NB1,NB2">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Available Labs (comma separated)</label>
+                                    <input type="text" class="form-control labs-input" placeholder="e.g. LAB1,LAB2,DLDLAB">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label">Working Days</label>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" name="workingDays[][monday]" value="monday">
+                                            <label class="form-check-label">Mon</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" name="workingDays[][tuesday]" value="tuesday">
+                                            <label class="form-check-label">Tue</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" name="workingDays[][wednesday]" value="wednesday">
+                                            <label class="form-check-label">Wed</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" name="workingDays[][thursday]" value="thursday">
+                                            <label class="form-check-label">Thu</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" name="workingDays[][friday]" value="friday">
+                                            <label class="form-check-label">Fri</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" name="workingDays[][saturday]" value="saturday">
+                                            <label class="form-check-label">Sat</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                            
+                        <!-- Course List -->
+                        <div class="courses-container mt-4">
+                                <h4 class="form-section-subtitle mb-3">Courses</h4>
+                                <div class="course-list">
+                                    <div class="row mb-3">
+                                    <div class="col-md-3">
+                                        <label class="form-label">Course Code</label>
+                                        <input type="text" class="form-control" name="courseCode[]" required onchange="updateCourseDetails(this)">
+                                    </div>
+                                    <div class="col-md-4">
+                                            <label class="form-label">Course Name</label>
+                                            <input type="text" class="form-control" name="courseName[]" required>
+                                        </div>
+                                    <div class="col-md-2">
+                                            <label class="form-label">Credit Hours</label>
+                                            <input type="number" class="form-control" name="creditHours[]" min="1" max="4" required>
+                                        </div>
+                                    <div class="col-md-2">
+                                            <label class="form-label">Teacher</label>
+                                            <input type="text" class="form-control" name="teacher[]" required>
+                                        </div>
+                                        <div class="col-md-1 d-flex align-items-end flex-column">
+                                            <label class="form-label">Type</label>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="courseType0" value="LAB" required>
+                                                <label class="form-check-label">Lab</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="courseType0" value="THEORY" required>
+                                                <label class="form-check-label">Theory</label>
+                                            </div>
+                                            <button type="button" class="btn btn-danger mt-1" onclick="this.closest('.row').remove()">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-outline-secondary" onclick="addCourseRow(this)">
+                                    <i class="fas fa-plus"></i> Add Course
+                                </button>
+                            </div>
+
+                        <div class="text-end mt-3">
+                            <button type="button" class="btn btn-danger" onclick="this.closest('.department-program-group').remove()">
+                                <i class="fas fa-trash"></i> Remove Department Program
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-outline-primary mt-3" onclick="addDepartmentProgramRow()">
+                    <i class="fas fa-plus"></i> Add Department Program
+                </button>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                    <button type="button" class="btn btn-outline-secondary me-md-2" onclick="window.location.href='home.html'">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Generate Timetable</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-database-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../auth.js"></script>
+    <script>
+        // Initialize Firebase Realtime Database
+        const db = firebase.database();
+
+        // Add logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            firebase.auth().signOut().then(() => {
+                window.location.href = 'login.html';
+            });
+        });
+
+        // Constants for timetable generation
+        const ROOMS = {
+            GENERAL: ['102', '103', '104', '105', '201', '202', '203', '204', '205', '206', '301', '302', '303', '305', '306'],
+            NB: ['NB1', 'NB2', 'NB3', 'NB4'],
+            LAB: ['LAB1', 'LAB2', 'LAB3', 'LAB4', 'LAB5', 'DLDLAB']
+        };
+
+        const TIME_SLOTS = {
+            JUNIOR: {
+                start: '08:00',
+                end: '14:00',
+                breaks: [
+                    { start: '10:00', end: '10:15' }, // Morning break
+                    { start: '12:00', end: '12:30' }  // Lunch break
+                ]
+            },
+            SENIOR: {
+                start: '14:00',
+                end: '21:30',
+                breaks: [
+                    { start: '16:00', end: '16:15' }, // Afternoon break
+                    { start: '18:00', end: '18:30' }  // Dinner break
+                ]
+            }
+        };
+
+        const COURSE_TYPES = {
+            THEORY_3: {
+                duration: 90, // 1.5 hours in minutes
+                sessionsPerWeek: 2,
+                preferredRooms: 'GENERAL'
+            },
+            LAB: {
+                duration: 180, // 3 hours in minutes
+                sessionsPerWeek: 1,
+                preferredRooms: 'LAB'
+            },
+            THEORY_2: {
+                duration: 120, // 2 hours in minutes
+                sessionsPerWeek: 1,
+                preferredRooms: 'GENERAL'
+            }
+        };
+
+        // Function to determine course type based on credit hours
+        function determineCourseType(creditHours, isLab) {
+            if (isLab) return 'LAB';
+            return creditHours === 3 ? 'THEORY_3' : 'THEORY_2';
+        }
+
+        // Function to check if a semester is junior (1-4) or senior (5-8)
+        function isSeniorSemester(semester) {
+            return semester >= 5;
+        }
+
+        // Function to format course data for Gemini API
+        function formatCourseData(formData) {
+            const departments = [];
+            const departmentGroups = document.querySelectorAll('.department-program-group');
+
+            departmentGroups.forEach(group => {
+                const department = {
+                    name: group.querySelector('select[name="department[]"]').value,
+                    program: group.querySelector('select[name="program[]"]').value,
+                    semester: parseInt(group.querySelector('select[name="semester[]"]').value),
+                    section: group.querySelector('select[name="section[]"]').value,
+                    workingDays: [],
+                    courses: []
+                };
+
+                // Get working days
+                const workingDaysInputs = group.querySelectorAll('input[type="checkbox"]:checked');
+                workingDaysInputs.forEach(input => {
+                    department.workingDays.push(input.value);
+                });
+
+                // Get courses
+                const courseRows = group.querySelectorAll('.course-list .row');
+                courseRows.forEach((row, idx) => {
+                    const courseCode = row.querySelector('input[name="courseCode[]"]').value;
+                    const courseName = row.querySelector('input[name="courseName[]"]').value;
+                    const creditHours = parseInt(row.querySelector('input[name="creditHours[]"]').value);
+                    const teacher = row.querySelector('input[name="teacher[]"]').value;
+                    // Get the selected type from radio buttons
+                    const typeInput = row.querySelector('input[type="radio"][name^="courseType"]:checked');
+                    let type = '';
+                    if (typeInput) {
+                        type = typeInput.value;
+                    } else {
+                        // fallback to previous logic
+                        type = determineCourseType(creditHours, courseCode.toLowerCase().includes('lab'));
+                    }
+                    department.courses.push({
+                        code: courseCode,
+                        name: courseName,
+                        creditHours: creditHours,
+                        teacher: teacher,
+                        type: type
+                    });
+                });
+
+                departments.push(department);
+            });
+
+            // Collect global rooms/labs from all groups (union)
+            const roomsSet = new Set();
+            const nbSet = new Set();
+            const labsSet = new Set();
+            document.querySelectorAll('.rooms-input').forEach(inp => {
+                (inp.value || '').split(',').forEach(v => {
+                    const r = v.trim();
+                    if (!r) return;
+                    // NB prefix treated as large rooms if starts with NB
+                    if (/^NB/i.test(r)) nbSet.add(r);
+                    else roomsSet.add(r);
+                });
+            });
+            document.querySelectorAll('.labs-input').forEach(inp => {
+                (inp.value || '').split(',').forEach(v => {
+                    const r = v.trim();
+                    if (r) labsSet.add(r);
+                });
+            });
+
+            return {
+                departments: departments,
+                rooms: {
+                    general: Array.from(roomsSet),
+                    nb: Array.from(nbSet),
+                    labs: Array.from(labsSet)
+                }
+            };
+        }
+
+        // Function to generate timetable using backend Python API
+        async function generateTimetable(timetableData) {
+            const apiUrl = (window.BACKEND_URL || 'http://localhost:5001') + '/api/generate-timetable';
+            const resp = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(timetableData)
+            });
+            const data = await resp.json();
+            if (!resp.ok) {
+                throw new Error(data.error || 'Backend error');
+            }
+            return data;
+        }
+
+        // Function to display the generated timetable
+        function displayTimetable(timetableData, timetableWindow) {
+            if (!timetableWindow) return;
+            // Create the HTML template as a string array for better readability
+            const htmlTemplate = [
+                '<!DOCTYPE html>',
+                '<html>',
+                '<head>',
+                '    <title>Generated Timetable</title>',
+                '    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">',
+                '    <style>',
+                '        body { padding: 20px; }',
+                '        .timetable-container { margin-bottom: 40px; }',
+                '        .time-slot { font-weight: bold; }',
+                '        .course-block { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 10px; margin: 5px 0; }',
+                '        .course-info { font-size: 0.9em; }',
+                '        .room-info { color: #6c757d; }',
+                '        .teacher-info { color: #495057; }',
+                '    </style>',
+                '</head>',
+                '<body>',
+                '    <div class="container">',
+                '        <h1 class="mb-4">Generated Timetable</h1>',
+                '        <div id="timetableContent"></div>',
+                '    </div>',
+                '</body>',
+                '</html>'
+            ].join('\n');
+
+            // Write the initial HTML template
+            timetableWindow.document.write(htmlTemplate);
+
+            // Create a script element for the timetable generation logic
+            const script = timetableWindow.document.createElement('script');
+            script.textContent = `
+                const timetableData = ${JSON.stringify(timetableData)};
+                const timetableContent = document.getElementById('timetableContent');
+
+                function escapeHtml(unsafe) {
+                    return unsafe
+                        .replace(/&/g, "&amp;")
+                        .replace(/</g, "&lt;")
+                        .replace(/>/g, "&gt;")
+                        .replace(/"/g, "&quot;")
+                        .replace(/'/g, "&#039;");
+                }
+
+                function generateCourseBlock(cls) {
+                    const code = escapeHtml(cls.code);
+                    const name = escapeHtml(cls.name);
+                    const room = escapeHtml(cls.room);
+                    const teacher = escapeHtml(cls.teacher);
+
+                    return \`
+                        <div class="course-block">
+                            <div class="course-info">\${code} - \${name}</div>
+                            <div class="room-info">Room: \${room}</div>
+                            <div class="teacher-info">Teacher: \${teacher}</div>
+                        </div>
+                    \`;
+                }
+
+                Object.entries(timetableData).forEach(([deptProgram, schedule]) => {
+                    const container = document.createElement('div');
+                    container.className = 'timetable-container';
+                    
+                    const title = document.createElement('h2');
+                    title.className = 'mb-3';
+                    title.textContent = deptProgram;
+                    container.appendChild(title);
+
+                    const tableWrapper = document.createElement('div');
+                    tableWrapper.className = 'table-responsive';
+                    
+                    const table = document.createElement('table');
+                    table.className = 'table table-bordered';
+                    
+                    // Create table header
+                    const thead = document.createElement('thead');
+                    thead.innerHTML = \`
+                        <tr>
+                            <th>Time</th>
+                            <th>Monday</th>
+                            <th>Tuesday</th>
+                            <th>Wednesday</th>
+                            <th>Thursday</th>
+                            <th>Friday</th>
+                            <th>Saturday</th>
+                        </tr>
+                    \`;
+                    table.appendChild(thead);
+                    
+                    // Create table body
+                    const tbody = document.createElement('tbody');
+                    const timeSlots = [...new Set(schedule.map(item => item.time))].sort();
+                    
+                    timeSlots.forEach(time => {
+                        const row = document.createElement('tr');
+                        
+                        // Add time slot
+                        const timeCell = document.createElement('td');
+                        timeCell.className = 'time-slot';
+                        timeCell.textContent = time;
+                        row.appendChild(timeCell);
+                        
+                        // Add day cells
+                        ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'].forEach(day => {
+                            const dayCell = document.createElement('td');
+                            const classes = schedule.filter(item => 
+                                item.time === time && 
+                                item.day.toLowerCase() === day
+                            );
+                            
+                            if (classes.length > 0) {
+                                dayCell.innerHTML = classes.map(cls => generateCourseBlock(cls)).join('');
+                            }
+                            
+                            row.appendChild(dayCell);
+                        });
+                        
+                        tbody.appendChild(row);
+                    });
+                    
+                    table.appendChild(tbody);
+                    tableWrapper.appendChild(table);
+                    container.appendChild(tableWrapper);
+                    timetableContent.appendChild(container);
+                });
+            `;
+
+            // Append the script to the document
+            timetableWindow.document.body.appendChild(script);
+            timetableWindow.document.close();
+        }
+
+        // Handle form submission
+        document.getElementById('departmentTimetableForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            // Open the window immediately on user action
+            let timetableWindow = window.open('', '_blank');
+            try {
+                // Get the submit button
+                const submitButton = e.target.querySelector('button[type="submit"]');
+                if (!submitButton) {
+                    throw new Error('Submit button not found');
+                }
+
+                // Show loading state
+                const originalButtonText = submitButton.innerHTML;
+                submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generating...';
+                submitButton.disabled = true;
+
+                // Validate form data
+                const formData = formatCourseData();
+                if (!validateFormData(formData)) {
+                    throw new Error('Please fill in all required fields correctly.');
+                }
+
+                // Show progress notification
+                const notification = createNotification('Generating timetable...', 'info');
+
+                try {
+                    // Generate timetable using Python backend
+                    const timetable = await generateTimetable(formData);
+                    
+                    // Validate timetable data
+                    if (!validateTimetableData(timetable)) {
+                        throw new Error('Invalid timetable data received from the API.');
+                    }
+
+                    // Update notification
+                    updateNotification(notification, 'Timetable generated successfully!', 'success');
+
+                    // Display the generated timetable
+                    displayTimetable(timetable, timetableWindow);
+
+                    // After successful timetable generation, save to history
+                    await saveTimetableToHistory(timetable);
+                    createNotification('Timetable generated and saved to history', 'success');
+                    // Hide stats box as backend generation does not use Gemini
+                    statsBox.classList.add('d-none');
+                } catch (apiError) {
+                    console.error('API Error:', apiError);
+                    updateNotification(notification, `Error: ${apiError.message}`, 'error');
+                    throw apiError;
+                }
+            } catch (error) {
+                console.error('Form Error:', error);
+                createNotification(error.message, 'error');
+                if (timetableWindow) timetableWindow.close();
+            } finally {
+                // Reset button state
+                const submitButton = e.target.querySelector('button[type="submit"]');
+                if (submitButton) {
+                    submitButton.innerHTML = 'Generate Timetable';
+                    submitButton.disabled = false;
+                }
+            }
+        });
+
+        // Validation functions
+        function validateFormData(formData) {
+            // Check if departments array exists and is not empty
+            if (!formData.departments || formData.departments.length === 0) {
+                return false;
+            }
+
+            // Validate each department
+            return formData.departments.every(dept => {
+                // Check required fields
+                if (!dept.name || !dept.program || !dept.semester || !dept.section) {
+                    return false;
+                }
+
+                // Check working days
+                if (!dept.workingDays || dept.workingDays.length === 0) {
+                    return false;
+                }
+
+                // Check courses
+                if (!dept.courses || dept.courses.length === 0) {
+                    return false;
+                }
+
+                // Validate each course
+                return dept.courses.every(course => 
+                    course.code && 
+                    course.name && 
+                    course.creditHours && 
+                    course.teacher
+                );
+            });
+        }
+
+        function validateTimetableData(timetable) {
+            if (!timetable || typeof timetable !== 'object') {
+                return false;
+            }
+
+            // Check if the timetable has at least one department program
+            return Object.keys(timetable).length > 0 && 
+                   Object.values(timetable).every(schedule => 
+                       Array.isArray(schedule) && 
+                       schedule.every(item => 
+                           item.time && 
+                           item.day && 
+                           item.code && 
+                           item.name && 
+                           item.room && 
+                           item.teacher
+                       )
+                   );
+        }
+
+        // Notification functions
+        function createNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
+            notification.style.zIndex = '1050';
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            document.body.appendChild(notification);
+            return notification;
+        }
+
+        function updateNotification(notification, message, type) {
+            notification.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+        }
+
+        // Courses database
+        const coursesDatabase = {
+            'CSC 1102': { name: 'English Composition and Comprehension', creditHours: 3 },
+            'CSC 1103': { name: 'Fundamentals of Programming', creditHours: 3 },
+            'CSC 1101': { name: 'Calculus and Analytical Geometry', creditHours: 3 },
+            'CSC 1211': { name: 'Ideology and Constitution of Pakistan', creditHours: 2 },
+            'CSC 1206': { name: 'Probability and Statistics', creditHours: 3 },
+            'CSC 2101': { name: 'Communication and Presentation Skills', creditHours: 3 },
+            'AIC 3501': { name: 'Artificial Neural Networks', creditHours: 2 },
+            'AIC 3503': { name: 'Machine Learning', creditHours: 2 },
+            'BA 1206': { name: 'Oral Communication and Presentation Skills', creditHours: 3 },
+            'BA 1108': { name: 'IT in Business', creditHours: 3 },
+            'BA 1101': { name: 'Introduction to Accounting', creditHours: 3 },
+            'BA 2311': { name: 'Business Statistics', creditHours: 3 },
+            'AF 1101': { name: 'Business Mathematics', creditHours: 3 },
+            'AF 1212': { name: 'Essentials of Marketing', creditHours: 3 },
+            'AF 2401': { name: 'Management Accounting', creditHours: 3 },
+            'MD 3505': { name: 'Principles of Journalism', creditHours: 3 },
+            'CSC 1107': { name: 'Applied Physics', creditHours: 2 },
+            'CSC 1108': { name: 'Introduction to Computer Science', creditHours: 2 },
+            'CSC 1207': { name: 'Digital Logic Design', creditHours: 2 },
+            'CSC 1208': { name: 'Object Oriented Programming Techniques', creditHours: 3 },
+            'CSCL 1207': { name: 'Digital Logic Design', creditHours: 2 },
+            'CSC 2201': { name: 'Computer Organization and Assembly Language', creditHours: 3 },
+            'CSC 2102': { name: 'Data Structures and Algorithms', creditHours: 3 },
+            'CSC 2205': { name: 'Operating Systems', creditHours: 3 },
+            'AIC 3502': { name: 'Knowledge Representation and Reasoning', creditHours: 3 },
+            'BA 1109': { name: 'Personal Management and Communication', creditHours: 3 },
+            'BA 2402': { name: 'Retail Management', creditHours: 3 },
+            'AF 1104': { name: 'Introduction to Financial Accounting', creditHours: 3 },
+            'AF 1201': { name: 'Advanced Financial Accounting', creditHours: 3 },
+            'AF 2302': { name: 'Cost Accounting', creditHours: 3 },
+            'AF 3501': { name: 'Accounting and Financial Information Systems', creditHours: 3 },
+            'MD 1223': { name: 'Islamic Studies', creditHours: 2 },
+            'MD 2428': { name: 'Introduction to Advertising Strategy', creditHours: 3 },
+            'CSC 3202': { name: 'Design and Analysis of Algorithms', creditHours: 3 },
+            'CSC 4802': { name: 'Android Application Development', creditHours: 3 },
+            'CSC 3205': { name: 'Computer Networks and Data Communications', creditHours: 3 },
+            'SEC 3303': { name: 'Human Resource Management', creditHours: 3 },
+            'CSC 2203': { name: 'Database Systems', creditHours: 3 },
+            'SEC 4714': { name: 'Business Process Engineering', creditHours: 3 },
+            'SEC 3605': { name: 'Software Quality Engineering', creditHours: 3 },
+            'SEC 4711': { name: 'Formal Methods in Software Engineering', creditHours: 3 },
+            'SEC 3617': { name: 'Information Security', creditHours: 3 },
+            'AIC 4802': { name: 'Data Mining', creditHours: 3 },
+            'AIC 4501': { name: 'Design and Creativity', creditHours: 3 },
+            'CSC 4106': { name: 'Parallel and Distributed Computing', creditHours: 3 },
+            'BA 3501': { name: 'Financial Markets and Institutions', creditHours: 3 },
+            'BA 4705': { name: 'Services Marketing', creditHours: 3 },
+            'BA 3505': { name: 'Quantitative Skills', creditHours: 3 },
+            'AF 3507': { name: 'Financial Institutes and Markets', creditHours: 3 },
+            'AF 2403': { name: 'Marketing Management', creditHours: 3 },
+            'AF 2306': { name: 'Pakistan Economic Policy', creditHours: 3 },
+            'CSC 2204': { name: 'Finite Automata Theory and Formal Languages', creditHours: 3 },
+            'CSC 4101': { name: 'Artificial Intelligence', creditHours: 3 },
+            'SEC 3604': { name: 'Software Construction and Development', creditHours: 2 },
+            'CSC 1205': { name: 'Technical and Business Writing', creditHours: 3 },
+            'SEC 3607': { name: 'Web Engineering', creditHours: 3 },
+            'AIC 2401': { name: 'Programming for Artificial Intelligence', creditHours: 2 },
+            'CSC 3109': { name: 'Software Engineering', creditHours: 3 },
+            'CSC 4102': { name: 'Professional Practices', creditHours: 3 },
+            'BA 3605': { name: 'Statistical Inference', creditHours: 3 },
+            'BA 3607': { name: 'Operations Management', creditHours: 3 },
+            'BA 4814': { name: 'Project Management', creditHours: 3 },
+            'BA 4704': { name: 'Management Information Systems', creditHours: 3 },
+            'AF 3608': { name: 'Islamic Banking and Finance', creditHours: 3 },
+            'AF 4702': { name: 'Financial Management', creditHours: 3 },
+            'AF 4801': { name: 'Corporate Finance', creditHours: 3 },
+            'AF 3504': { name: 'Entrepreneurship and Small Business Management', creditHours: 3 },
+            'MD 4701': { name: 'State and Nation Building in Pakistan', creditHours: 3 },
+            'MS 5204': { name: 'Quantitative Tools for Research', creditHours: 3 },
+            'BA 5402': { name: 'Macroeconomics', creditHours: 3 },
+            'CSC 3203': { name: 'Numerical Computing', creditHours: 3 },
+            'CSC 4503': { name: 'Introduction to Accounting', creditHours: 3 },
+            'CSC 2206': { name: 'Linear Algebra', creditHours: 3 },
+            'SEC 2103': { name: 'Human Computer Interaction', creditHours: 3 },
+            'MD 1211': { name: 'Basic Design', creditHours: 3 },
+            'SEC 3302': { name: 'Financial Accounting', creditHours: 3 },
+            'SEC 2403': { name: 'Software Requirement Engineering', creditHours: 3 },
+            'AIC 3603': { name: 'Natural Language Processing', creditHours: 3 },
+            'AIC 4702': { name: 'Deep Learning', creditHours: 3 },
+            'CSC 4605': { name: 'Sociology', creditHours: 3 },
+            'CSC 3201': { name: 'Compiler Construction', creditHours: 3 },
+            'MD 4872': { name: 'Visual Storytelling', creditHours: 3 },
+            'AIC 3602': { name: 'Computing Vision', creditHours: 2 },
+            'CSC 2123': { name: 'Graph Theory', creditHours: 3 },
+            'CSC 4826': { name: 'Introduction to Data Science', creditHours: 3 },
+            'SEC 3612': { name: 'Artficial Intelligence', creditHours: 3 },
+            'SEC 3603': { name: 'Software Project Management', creditHours: 3 },
+            'BA 5105': { name: 'Financial Management', creditHours: 3 },
+            'PM 5114': { name: 'Project Scope and Scheduling Management', creditHours: 3 },
+            'PM 5351': { name: 'Project Risk Management', creditHours: 3 },
+            'DS 5211': { name: 'Application of Geographic Information System and Remote Sensing in Development', creditHours: 3 },
+            'MS 6425': { name: 'Strategic Finance', creditHours: 3 },
+            'CYS 5101': { name: 'Applied Cryptography', creditHours: 3 },
+            'CSC 5161': { name: 'Machine Learning', creditHours: 3 },
+            'BA 3601': { name: 'Financial Management', creditHours: 3 },
+            'CSC 2103': { name: 'Digital Logic Design', creditHours: 2 },
+            'CSC 1201': { name: 'Discrete Mathematical Structures', creditHours: 3 },
+            'CSC 2122': { name: 'Differential Equations', creditHours: 3 },
+            'MD 2318': { name: 'History of Commercial Art', creditHours: 3 },
+            'MD 3601': { name: 'Art of Music', creditHours: 3 },
+            'CSC 4722': { name: 'Introduction to Blockchain Technology', creditHours: 3 },
+            'CSC 4706': { name: 'Digital Image Processing', creditHours: 3 },
+            'SEC 2404': { name: 'Software Design and Architecture', creditHours: 2 },
+            'MD 3506': { name: 'Theories of Visual Culture', creditHours: 3 },
+            'MS 6211': { name: 'Organizational Development', creditHours: 3 },
+            'CSC 4201': { name: 'Information Security', creditHours: 3 },
+            'SEC 4713': { name: 'Digital Logic Design', creditHours: 3 },
+            'AIC 4503': { name: 'Introduction to Accounting', creditHours: 3 },
+            'AIC 4805': { name: 'Speech Processing', creditHours: 3 },
+            'MD 4792': { name: 'Music Production and Design', creditHours: 3 },
+            'MD 4731': { name: 'Advertising Research', creditHours: 3 },
+            'BA 5456': { name: 'Leadership in Practice', creditHours: 3 },
+            'MS 5211': { name: 'Creative Leadership', creditHours: 3 },
+            'BA 5601': { name: 'Strategic HRM', creditHours: 3 },
+            'BA 5411': { name: 'Cost and Management Accounting', creditHours: 3 },
+            'NSC 5162': { name: 'Information Security', creditHours: 3 },
+            'CYS 5336': { name: 'Security in Cloud Environment', creditHours: 3 },
+            'CSC 5102': { name: 'Theory of Computation', creditHours: 3 },
+            'CSC 5262': { name: 'Computer Vision', creditHours: 3 },
+            'DSC 5101': { name: 'Statistical and Mathematical Methods for Data Science', creditHours: 3 },
+            'DSC 5201': { name: 'Machine Learning', creditHours: 3 }
+        };
+
+        // Program options for each department
+        const departmentPrograms = {
+            'air': ['BS AI'],
+            'cs': ['BS CS', 'BS SE'],
+            'ms': ['BBA', 'BS Business Analytics', 'BS Accounting and Finance'],
+            'ss': ['BS Social Sciences', 'BS Psychology'],
+            'media': ['BS Media Science']
+        };
+
+        // Function to update program options based on selected department
+        function updatePrograms(departmentSelect) {
+            const programSelect = departmentSelect.closest('.row').querySelector('select[name="program[]"]');
+            const department = departmentSelect.value;
+            programSelect.innerHTML = '<option value="">Select Program</option>';
+            
+            if (department && departmentPrograms[department]) {
+                departmentPrograms[department].forEach(program => {
+                    const option = document.createElement('option');
+                    option.value = program.toLowerCase().replace(/\s+/g, '_');
+                    option.textContent = program;
+                    programSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Function to update course details when a course code is selected
+        function updateCourseDetails(courseCodeInput) {
+            const row = courseCodeInput.closest('.row');
+            const courseNameInput = row.querySelector('input[name="courseName[]"]');
+            const creditHoursInput = row.querySelector('input[name="creditHours[]"]');
+            
+            const courseCode = courseCodeInput.value;
+            if (coursesDatabase[courseCode]) {
+                courseNameInput.value = coursesDatabase[courseCode].name;
+                creditHoursInput.value = coursesDatabase[courseCode].creditHours;
+                courseNameInput.readOnly = true;
+                creditHoursInput.readOnly = true;
+            } else {
+                courseNameInput.value = '';
+                creditHoursInput.value = '';
+                courseNameInput.readOnly = false;
+                creditHoursInput.readOnly = false;
+            }
+        }
+
+        // Function to add a new course row
+        function addCourseRow(button) {
+            const courseList = button.previousElementSibling;
+            const rowCount = courseList.querySelectorAll('.row').length;
+            const newRow = document.createElement('div');
+            newRow.className = 'row mb-3';
+            newRow.innerHTML = `
+                <div class="col-md-3">
+                    <label class="form-label">Course Code</label>
+                    <input type="text" class="form-control" name="courseCode[]" required onchange="updateCourseDetails(this)">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Course Name</label>
+                    <input type="text" class="form-control" name="courseName[]" required>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Credit Hours</label>
+                    <input type="number" class="form-control" name="creditHours[]" min="1" max="4" required>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Teacher</label>
+                    <input type="text" class="form-control" name="teacher[]" required>
+                </div>
+                <div class="col-md-1 d-flex align-items-end flex-column">
+                    <label class="form-label">Type</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="courseType${rowCount}" value="LAB" required>
+                        <label class="form-check-label">Lab</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="courseType${rowCount}" value="THEORY" required>
+                        <label class="form-check-label">Theory</label>
+                    </div>
+                    <button type="button" class="btn btn-danger mt-1" onclick="this.closest('.row').remove()">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            courseList.appendChild(newRow);
+        }
+
+        // Function to add a new department program row
+        function addDepartmentProgramRow() {
+            const departmentProgramsList = document.getElementById('departmentProgramsList');
+            const newGroup = document.createElement('div');
+            newGroup.className = 'department-program-group mb-4 p-3 border rounded';
+            newGroup.innerHTML = `
+                <!-- University Information -->
+                <div class="form-section">
+                    <h3 class="form-section-title">University Information</h3>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="department" class="form-label">Department</label>
+                            <select class="form-select" name="department[]" required onchange="updatePrograms(this)">
+                                <option value="">Select Department</option>
+                                <option value="air">Artificial Intelligence and Robotics</option>
+                                <option value="cs">Computer Science</option>
+                                <option value="ms">Management Sciences</option>
+                                <option value="ss">Social Sciences</option>
+                                <option value="media">Media Sciences</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="program" class="form-label">Program</label>
+                            <select class="form-select" name="program[]" required>
+                                <option value="">Select Program</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                        <label class="form-label">Semester</label>
+                        <select class="form-select" name="semester[]" required>
+                            <option value="">Select Semester</option>
+                            <option value="1">1st Semester</option>
+                            <option value="2">2nd Semester</option>
+                            <option value="3">3rd Semester</option>
+                            <option value="4">4th Semester</option>
+                            <option value="5">5th Semester</option>
+                            <option value="6">6th Semester</option>
+                            <option value="7">7th Semester</option>
+                            <option value="8">8th Semester</option>
+                        </select>
+                    </div>
+                        <div class="col-md-6">
+                        <label class="form-label">Section</label>
+                        <select class="form-select" name="section[]" required>
+                            <option value="">Select Section</option>
+                            <option value="A">Section A</option>
+                            <option value="B">Section B</option>
+                            <option value="C">Section C</option>
+                            <option value="D">Section D</option>
+                        </select>
+                    </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-12">
+                        <label class="form-label">Working Days</label>
+                        <div class="d-flex flex-wrap gap-2">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="workingDays[][monday]" value="monday">
+                                <label class="form-check-label">Mon</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="workingDays[][tuesday]" value="tuesday">
+                                <label class="form-check-label">Tue</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="workingDays[][wednesday]" value="wednesday">
+                                <label class="form-check-label">Wed</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="workingDays[][thursday]" value="thursday">
+                                <label class="form-check-label">Thu</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="workingDays[][friday]" value="friday">
+                                <label class="form-check-label">Fri</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="workingDays[][saturday]" value="saturday">
+                                <label class="form-check-label">Sat</label>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                
+                <!-- Course List -->
+                <div class="courses-container mt-4">
+                    <h4 class="form-section-subtitle mb-3">Courses</h4>
+                    <div class="course-list">
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Course Code</label>
+                                <input type="text" class="form-control" name="courseCode[]" required onchange="updateCourseDetails(this)">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Course Name</label>
+                                <input type="text" class="form-control" name="courseName[]" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Credit Hours</label>
+                                <input type="number" class="form-control" name="creditHours[]" min="1" max="4" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Teacher</label>
+                                <input type="text" class="form-control" name="teacher[]" required>
+                            </div>
+                            <div class="col-md-1 d-flex align-items-end flex-column">
+                                <label class="form-label">Type</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="courseType0" value="LAB" required>
+                                    <label class="form-check-label">Lab</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="courseType0" value="THEORY" required>
+                                    <label class="form-check-label">Theory</label>
+                                </div>
+                                <button type="button" class="btn btn-danger mt-1" onclick="this.closest('.row').remove()">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-outline-secondary" onclick="addCourseRow(this)">
+                        <i class="fas fa-plus"></i> Add Course
+                    </button>
+                </div>
+
+                <div class="text-end mt-3">
+                    <button type="button" class="btn btn-danger" onclick="this.closest('.department-program-group').remove()">
+                        <i class="fas fa-trash"></i> Remove Department Program
+                    </button>
+                </div>
+            `;
+            departmentProgramsList.appendChild(newGroup);
+        }
+
+        // Function to save timetable to history
+        async function saveTimetableToHistory(timetableData) {
+            try {
+                const user = firebase.auth().currentUser;
+                if (!user) throw new Error('User not authenticated');
+
+                const historyRef = db.ref(`timetables/${user.uid}`);
+                const newTimetableRef = historyRef.push();
+
+                // Extract department information from the timetable data
+                const departments = Object.keys(timetableData).map(deptProgram => {
+                    const [deptName, program] = deptProgram.split(' - ');
+                    return {
+                        name: deptName,
+                        program: program,
+                        semester: 1, // Default semester, you may want to extract this from your data
+                        section: 'A' // Default section, you may want to extract this from your data
+                    };
+                });
+
+                await newTimetableRef.set({
+                    timestamp: firebase.database.ServerValue.TIMESTAMP,
+                    data: timetableData,
+                    departments: departments
+                });
+
+                console.log('Timetable saved to history');
+                loadTimetableHistory();
+            } catch (error) {
+                console.error('Error saving timetable:', error);
+                createNotification('Failed to save timetable to history', 'error');
+            }
+        }
+
+        // Function to load timetable history
+        async function loadTimetableHistory() {
+            try {
+                const user = firebase.auth().currentUser;
+                if (!user) throw new Error('User not authenticated');
+
+                const historyRef = db.ref(`timetables/${user.uid}`);
+                const snapshot = await historyRef.orderByChild('timestamp').limitToLast(10).once('value');
+                const historyContainer = document.getElementById('timetableHistory');
+                historyContainer.innerHTML = '';
+
+                const timetables = [];
+                snapshot.forEach(childSnapshot => {
+                    timetables.unshift({
+                        id: childSnapshot.key,
+                        ...childSnapshot.val()
+                    });
+                });
+
+                timetables.forEach(timetable => {
+                    const date = new Date(timetable.timestamp);
+                    const departments = timetable.departments.map(dept => 
+                        `${dept.name} - ${dept.program} (Semester ${dept.semester}, Section ${dept.section})`
+                    ).join('<br>');
+
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'list-group-item list-group-item-action';
+                    historyItem.innerHTML = `
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">Generated on ${date.toLocaleDateString()} ${date.toLocaleTimeString()}</h6>
+                            <div>
+                                <button class="btn btn-sm btn-primary view-timetable" data-id="${timetable.id}">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                                <button class="btn btn-sm btn-danger delete-timetable" data-id="${timetable.id}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <small class="text-muted">${departments}</small>
+                    `;
+
+                    historyContainer.appendChild(historyItem);
+                });
+
+                // Add event listeners to view buttons
+                document.querySelectorAll('.view-timetable').forEach(button => {
+                    button.addEventListener('click', async () => {
+                        const timetableId = button.dataset.id;
+                        const timetable = timetables.find(t => t.id === timetableId);
+                        if (timetable) {
+                            displayTimetable(timetable.data);
+                            $('#historyModal').modal('hide');
+                        }
+                    });
+                });
+
+                // Add event listeners to delete buttons
+                document.querySelectorAll('.delete-timetable').forEach(button => {
+                    button.addEventListener('click', async () => {
+                        const timetableId = button.dataset.id;
+                        if (confirm('Are you sure you want to delete this timetable?')) {
+                            await deleteTimetableFromHistory(timetableId);
+                        }
+                    });
+                });
+            } catch (error) {
+                console.error('Error loading timetable history:', error);
+                createNotification('Failed to load timetable history', 'error');
+            }
+        }
+
+        // Function to delete timetable from history
+        async function deleteTimetableFromHistory(timetableId) {
+            try {
+                const user = firebase.auth().currentUser;
+                if (!user) throw new Error('User not authenticated');
+
+                await db.ref(`timetables/${user.uid}/${timetableId}`).remove();
+                console.log('Timetable deleted from history');
+                loadTimetableHistory();
+                createNotification('Timetable deleted successfully', 'success');
+            } catch (error) {
+                console.error('Error deleting timetable:', error);
+                createNotification('Failed to delete timetable', 'error');
+            }
+        }
+
+        // Load history when the modal is opened
+        document.getElementById('historyModal').addEventListener('show.bs.modal', loadTimetableHistory);
+
+        // Timetable Statistics Toggle Logic
+        const statsToggle = document.getElementById('statsToggle');
+        const statsBox = document.getElementById('timetableStatsBox');
+        let lastGeneratedTimetable = null;
+        let lastConstraints = null;
+
+        // Save the last generated timetable and constraints after generation
+        // No-op, kept for compatibility if needed
+        async function generateTimetableWithStats(timetableData) {
+            return await generateTimetable(timetableData);
+        }
+
+        // Toggle event
+        statsToggle.addEventListener('change', async function() {
+            if (this.checked) {
+                statsBox.classList.remove('d-none');
+                statsBox.textContent = 'Loading statistics...';
+                if (!lastGeneratedTimetable || !lastConstraints) {
+                    statsBox.textContent = 'No timetable generated yet.';
+                } else {
+                    try {
+                        let summary = await getTimetableStatsFromGemini(lastGeneratedTimetable, lastConstraints);
+                        // Format: remove asterisks, convert *text* and **text** to <b>text</b>, and convert markdown lists to HTML lists
+                        summary = summary
+                            .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>') // bold
+                            .replace(/\*(.*?)\*/g, '<b>$1</b>') // italic to bold
+                            .replace(/^\s*[-*]\s+/gm, '<li>') // bullet points to <li>
+                            .replace(/(<li>.*?)(?=\n|$)/g, '$1</li>'); // close <li>
+                        // Wrap <li> in <ul> if any <li> exists
+                        if (summary.includes('<li>')) {
+                            summary = summary.replace(/(<li>[\s\S]*<\/li>)/g, '<ul>$1</ul>');
+                        }
+                        // Remove any remaining asterisks
+                        summary = summary.replace(/\*/g, '');
+                        statsBox.innerHTML = summary;
+                    } catch (err) {
+                        statsBox.textContent = 'Failed to load statistics.';
+                    }
+                }
+            } else {
+                statsBox.classList.add('d-none');
+            }
+        });
+
+        // Function to get stats/summary from Gemini API
+        async function getTimetableStatsFromGemini() { return ''; }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,45 @@
+HourHive.ai - Start Guide (Windows)
+
+Prerequisites
+- Python 3.9+ (py command available)
+- Node.js 16+ and npm
+
+1) Backend (Python Flask API)
+- Open PowerShell
+- Run:
+  cd F:\projects\Hourhive\Server
+  py -3 -m venv .venv
+  Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+  .\.venv\Scripts\Activate.ps1
+  python -m pip install -r requirements.txt
+  python app.py
+
+- Verify health in another PowerShell window:
+  Invoke-WebRequest http://localhost:5001/api/health
+  (Expected: {"status":"ok"})
+
+2) Frontend (Static site)
+- Open a new PowerShell window:
+  cd F:\projects\Hourhive\Main
+  npm install
+  npm run dev
+
+- Open in browser:
+  http://localhost:3000/pages/department-timetable.html
+
+3) Generate a Timetable (UI)
+- Fill: Department, Program, Semester, Section
+- Enter rooms (comma-separated): e.g. 102,103,201,NB1
+- Enter labs (comma-separated): e.g. LAB1,LAB2,DLDLAB
+- Add courses (code, name, credit hours, teacher, Type)
+- Submit → The UI calls http://localhost:5001/api/generate-timetable and displays the result
+
+Config / Notes
+- Backend URL override (if server runs elsewhere):
+  In browser console before submit:  window.BACKEND_URL = 'http://YOUR_HOST:PORT'
+- CORS is enabled on the backend for local dev.
+
+Troubleshooting
+- Access denied during pip install: run PowerShell as Administrator and retry install.
+- Port conflict: change port in Server\app.py (app.run(..., port=NEW)), set window.BACKEND_URL accordingly.
+- Health endpoint fails: ensure backend PowerShell is running and not blocked by firewall/antivirus.

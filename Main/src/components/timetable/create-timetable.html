@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Timetable - ZabSmart Timetable</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .timetable-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        
+        .timetable-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .timetable-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .timetable-card {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .timetable-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        .timetable-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .timetable-card p {
+            color: #7f8c8d;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .timetable-card .btn {
+            width: 100%;
+            padding: 12px 24px;
+            font-size: 16px;
+        }
+        
+        .card-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1>ZabSmart Timetable</h1>
+                <p class="subtitle">An optimized timetable creation</p>
+            </div>
+            <nav class="header-nav">
+                <a href="home.html" class="btn btn-outline">Home</a>
+                <button id="logoutBtn" class="btn btn-outline">Logout</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="timetable-container">
+        <div class="timetable-header">
+            <h2>Create New Timetable</h2>
+            <p>Choose the type of timetable you want to create</p>
+        </div>
+        
+        <div class="timetable-options">
+            <div class="timetable-card">
+                <div class="card-icon">🏛️</div>
+                <h3>University Timetable</h3>
+                <p>Create a comprehensive timetable for the entire university. This option allows you to manage schedules across all departments and faculties.</p>
+                <a href="university-timetable.html" class="btn btn-primary">Create University Timetable</a>
+            </div>
+            
+            <div class="timetable-card">
+                <div class="card-icon">📚</div>
+                <h3>Department Timetable</h3>
+                <p>Design a specialized timetable for a specific department. This option is perfect for managing schedules within a single department.</p>
+                <a href="department-timetable.html" class="btn btn-primary">Create Department Timetable</a>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html> 

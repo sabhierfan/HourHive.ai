@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Timetable - HourHive.ai</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .view-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .view-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .view-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .view-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .action-button {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .edit-btn {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .edit-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .print-btn {
+            background: #2196f3;
+            color: white;
+        }
+
+        .print-btn:hover {
+            background: #1976d2;
+        }
+
+        .export-btn {
+            background: #4caf50;
+            color: white;
+        }
+
+        .export-btn:hover {
+            background: #388e3c;
+        }
+
+        .timetable-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .info-label {
+            font-size: 0.875rem;
+            color: #666;
+        }
+
+        .info-value {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .timetable-grid {
+            overflow-x: auto;
+            margin-bottom: 2rem;
+        }
+
+        .timetable-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .timetable-table th,
+        .timetable-table td {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .timetable-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .timetable-table td {
+            vertical-align: top;
+        }
+
+        .time-slot {
+            font-weight: 500;
+            color: #666;
+        }
+
+        .course-cell {
+            padding: 0.5rem;
+            background: #e3f2fd;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+
+        .course-code {
+            font-weight: 600;
+            color: #1976d2;
+        }
+
+        .course-name {
+            font-size: 0.875rem;
+            color: #333;
+        }
+
+        .instructor {
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        .room {
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-color {
+            width: 1rem;
+            height: 1rem;
+            border-radius: 4px;
+        }
+
+        .legend-text {
+            font-size: 0.875rem;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .view-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .view-actions {
+                width: 100%;
+            }
+
+            .action-button {
+                flex: 1;
+                text-align: center;
+            }
+
+            .timetable-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <h1>HourHive.ai</h1>
+            </div>
+            <div class="nav-links">
+                <a href="home.html">Home</a>
+                <a href="create-timetable.html">Create Timetable</a>
+                <a href="history.html">History</a>
+                <button id="logoutBtn" class="btn btn-outline">Logout</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="view-container">
+        <div class="view-header">
+            <h2 class="view-title">University Timetable - Fall 2023</h2>
+            <div class="view-actions">
+                <button class="action-button edit-btn">Edit</button>
+                <button class="action-button print-btn">Print</button>
+                <button class="action-button export-btn">Export</button>
+            </div>
+        </div>
+
+        <div class="timetable-info">
+            <div class="info-item">
+                <span class="info-label">Created By</span>
+                <span class="info-value">admin@zab.edu.pk</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Created On</span>
+                <span class="info-value">15 Aug 2023</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Last Modified</span>
+                <span class="info-value">20 Aug 2023</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Status</span>
+                <span class="info-value">Published</span>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #e3f2fd;"></div>
+                <span class="legend-text">Theory</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #f3e5f5;"></div>
+                <span class="legend-text">Lab</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #e8f5e9;"></div>
+                <span class="legend-text">Hybrid</span>
+            </div>
+        </div>
+
+        <div class="timetable-grid">
+            <table class="timetable-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Monday</th>
+                        <th>Tuesday</th>
+                        <th>Wednesday</th>
+                        <th>Thursday</th>
+                        <th>Friday</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="time-slot">9:00 - 10:30</td>
+                        <td>
+                            <div class="course-cell">
+                                <div class="course-code">CS101</div>
+                                <div class="course-name">Introduction to Programming</div>
+                                <div class="instructor">Dr. John Smith</div>
+                                <div class="room">Room 101</div>
+                            </div>
+                        </td>
+                        <td></td>
+                        <td>
+                            <div class="course-cell">
+                                <div class="course-code">CS201</div>
+                                <div class="course-name">Data Structures</div>
+                                <div class="instructor">Dr. Jane Doe</div>
+                                <div class="room">Room 102</div>
+                            </div>
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="time-slot">10:45 - 12:15</td>
+                        <td></td>
+                        <td>
+                            <div class="course-cell">
+                                <div class="course-code">CS102</div>
+                                <div class="course-name">Object-Oriented Programming</div>
+                                <div class="instructor">Dr. John Smith</div>
+                                <div class="room">Room 103</div>
+                            </div>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <div class="course-cell">
+                                <div class="course-code">CS202</div>
+                                <div class="course-name">Algorithms</div>
+                                <div class="instructor">Dr. Jane Doe</div>
+                                <div class="room">Room 104</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-slot">1:00 - 2:30</td>
+                        <td>
+                            <div class="course-cell">
+                                <div class="course-code">CS103</div>
+                                <div class="course-name">Database Systems</div>
+                                <div class="instructor">Dr. John Smith</div>
+                                <div class="room">Lab 101</div>
+                            </div>
+                        </td>
+                        <td></td>
+                        <td>
+                            <div class="course-cell">
+                                <div class="course-code">CS203</div>
+                                <div class="course-name">Web Development</div>
+                                <div class="instructor">Dr. Jane Doe</div>
+                                <div class="room">Lab 102</div>
+                            </div>
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="time-slot">2:45 - 4:15</td>
+                        <td></td>
+                        <td>
+                            <div class="course-cell">
+                                <div class="course-code">CS104</div>
+                                <div class="course-name">Software Engineering</div>
+                                <div class="instructor">Dr. John Smith</div>
+                                <div class="room">Room 105</div>
+                            </div>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <div class="course-cell">
+                                <div class="course-code">CS204</div>
+                                <div class="course-name">Artificial Intelligence</div>
+                                <div class="instructor">Dr. Jane Doe</div>
+                                <div class="room">Room 106</div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html> 
