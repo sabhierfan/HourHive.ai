@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
@@ -153,7 +155,12 @@ def generate_timetable():
 
 
 if __name__ == "__main__":
-    # Default dev server on port 5001
-    app.run(host="0.0.0.0", port=5001, debug=True)
+    # Dev server on port 5001. Binds to localhost with the debugger off by
+    # default: debug=True on 0.0.0.0 exposes Werkzeug's interactive Python
+    # console to anyone on the network. Opt in via env vars when needed.
+    host = os.environ.get("HOURHIVE_HOST", "127.0.0.1")
+    port = int(os.environ.get("HOURHIVE_PORT", "5001"))
+    debug = os.environ.get("FLASK_DEBUG") == "1"
+    app.run(host=host, port=port, debug=debug)
 
 
