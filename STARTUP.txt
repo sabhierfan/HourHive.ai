@@ -38,8 +38,12 @@ Config / Notes
 - Backend URL override (if server runs elsewhere):
   In browser console before submit:  window.BACKEND_URL = 'http://YOUR_HOST:PORT'
 - CORS is enabled on the backend for local dev.
+- Backend host/port/debug are set with env vars before running python app.py
+  (defaults: HOURHIVE_HOST=127.0.0.1, HOURHIVE_PORT=5001, debugger off):
+  $env:HOURHIVE_HOST = '0.0.0.0'   # only if other devices must reach it
+  $env:FLASK_DEBUG = '1'           # enables auto-reload + debugger; never on a shared network
 
 Troubleshooting
 - Access denied during pip install: run PowerShell as Administrator and retry install.
-- Port conflict: change port in Server\app.py (app.run(..., port=NEW)), set window.BACKEND_URL accordingly.
+- Port conflict: run $env:HOURHIVE_PORT = 'NEW' before python app.py, set window.BACKEND_URL accordingly.
 - Health endpoint fails: ensure backend PowerShell is running and not blocked by firewall/antivirus.
